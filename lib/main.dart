@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:series_firebase/firebase_options.dart';
 import 'package:series_firebase/screens/tela_busca.dart';
 import 'package:series_firebase/screens/tela_login.dart';
+import 'package:series_firebase/screens/tela_lista.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,7 @@ class MainApp extends StatelessWidget {
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const TelaLogin()),
       GoRoute(path: '/', builder: (context, state) => const TelaBusca()),
+      GoRoute(path: '/lista', builder: (context, state) => const TelaLista()),
     ],
   );
 

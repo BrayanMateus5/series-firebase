@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:series_firebase/model/serie.dart';
 import 'package:series_firebase/service/tvmaze_service.dart';
+import 'package:go_router/go_router.dart';
+import 'package:series_firebase/service/auth_service.dart';
+import 'package:series_firebase/service/lista_service.dart';
 
 class TelaBusca extends StatefulWidget {
   const TelaBusca({super.key});
@@ -13,6 +16,8 @@ class TelaBusca extends StatefulWidget {
 
 class TelaBuscaState extends State<TelaBusca> {
   final _service = TvMazeService();
+  final _listaService = ListaService();
+  final _authService = AuthService();
   final _buscaController = TextEditingController();
   List<Serie> _series = [];
 
@@ -44,10 +49,33 @@ class TelaBuscaState extends State<TelaBusca> {
     }
   }
 
+  Future<void> _adicionar(Serie serie) async {
+    await _listaService.adicionar(serie);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${serie.nome} adicionada à sua lista')),
+    );
+  }
+
+  Future<void> _sair() async {
+    await _authService.sair();
+    if (!mounted) return;
+    context.go('/login');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Buscar Séries')),
+      appBar: AppBar(
+        title: const Text('Buscar Séries'),
+        actions: [
+          IconButton(
+            onPressed: () => context.push('/lista'),
+            icon: const Icon(Icons.list),
+          ),
+          IconButton(onPressed: _sair, icon: const Icon(Icons.logout)),
+        ],
+      ),
       body: Column(
         children: [
           Padding(
@@ -79,6 +107,10 @@ class TelaBuscaState extends State<TelaBusca> {
                       : Image.network(serie.imagem!, width: 40),
                   title: Text(serie.nome),
                   subtitle: Text(serie.generos.join(', ')),
+                  trailing: IconButton(
+                    onPressed: () => _adicionar(serie),
+                    icon: const Icon(Icons.add),
+                  ),
                 );
               },
             ),
