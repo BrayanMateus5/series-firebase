@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import "package:series_firebase/model/serie.dart";
+import 'package:series_firebase/model/serie.dart';
 
 class TvMazeService {
   static const _baseUrl = 'https://api.tvmaze.com';
@@ -32,6 +32,7 @@ class TvMazeService {
         .toList();
   }
 
+  //Ocorre a busca por nome, retornando uma série
   Future<Serie> buscarPorNome(String nome) async {
     final uri = Uri.parse(
       '$_baseUrl/singlesearch/shows?q=${Uri.encodeComponent(nome)}',
@@ -45,6 +46,7 @@ class TvMazeService {
     return Serie.fromJson(dados as Map<String, dynamic>);
   }
 
+  //Ocorre a busca de detalhes por id, retornando uma série
   Future<Serie> detalhes(int id) async {
     final uri = Uri.parse('$_baseUrl/shows/$id');
     final resposta = await http.get(uri, headers: _headers).timeout(_prazo);

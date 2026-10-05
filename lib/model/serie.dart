@@ -25,10 +25,11 @@ class Serie {
 
     return Serie(
       id: json['id'] as int,
-      nome: json['nome'] as String,
+      nome: json['name'] as String,
       imagem: imagem?['medium'] as String?,
       nota: nota?.toDouble(),
-      generos: List<String>.from(json['generos'] as List),
+      generos: List<String>.from(json['genres'] as List),
+      //removendo as tags HTML do resumo
       resumo: resumo.replaceAll(RegExp(r'<[^>]*>'), ''),
     );
   }
