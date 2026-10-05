@@ -42,36 +42,75 @@ class TelaListaState extends State<TelaLista> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Minha lista')),
-      body: _series.isEmpty
-          ? const Center(child: Text('Sua lista está vazia'))
-          : ListView.builder(
-              itemCount: _series.length,
-              itemBuilder: (context, index) {
-                final serie = _series[index];
-                return ListTile(
-                  leading: serie.imagem == null
-                      ? null
-                      : Image.network(serie.imagem!, width: 40),
-                  title: Text(serie.nome),
-                  subtitle: Text(
-                    serie.assistido ? 'Assistido' : 'Quero assistir',
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: serie.assistido,
-                        onChanged: (valor) => _marcarAssistido(serie, valor!),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: _series.isEmpty
+              ? const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.playlist_add, size: 64, color: Colors.grey),
+                    SizedBox(height: 8),
+                    Text('Sua lista está vazia'),
+                    Text('Adicione séries pela busca'),
+                  ],
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _series.length,
+                  itemBuilder: (context, index) {
+                    final serie = _series[index];
+                    return Card(
+                      child: ListTile(
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: serie.imagem == null
+                              ? const SizedBox(
+                                  width: 45,
+                                  height: 64,
+                                  child: Icon(Icons.tv),
+                                )
+                              : Image.network(
+                                  serie.imagem!,
+                                  width: 45,
+                                  height: 64,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
+                        title: Text(
+                          serie.nome,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: serie.assistido
+                                ? TextDecoration.lineThrough
+                                : null,
+                          ),
+                        ),
+                        subtitle: Text(
+                          serie.assistido ? 'Assistido' : 'Quero assistir',
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Checkbox(
+                              value: serie.assistido,
+                              onChanged: (valor) =>
+                                  _marcarAssistido(serie, valor!),
+                            ),
+                            IconButton(
+                              tooltip: 'Remover da lista',
+                              onPressed: () => _excluir(serie),
+                              icon: const Icon(Icons.delete_outline),
+                              color: Colors.red,
+                            ),
+                          ],
+                        ),
                       ),
-                      IconButton(
-                        onPressed: () => _excluir(serie),
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+        ),
+      ),
     );
   }
 }
